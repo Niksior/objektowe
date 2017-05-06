@@ -1,62 +1,74 @@
-import java.nio.file.*;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.InputMismatchException;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 public class MainActivity {
 
-	Clients clients[];
-	Globals globals;
+	Clients clients[] = new Clients[500];
+	Globals globals = new Globals();
 	
 	public static void main(String[] args) {
 		MainActivity bank = new MainActivity();
 		boolean condition = true;
 		
 		while (condition) {
-			condition = bank.showMenu(bank);
+			condition = bank.showMenu();
 		}
 	}
 	
 	public void vista() {
-		
+		showDialog("Do you really want to make this action? y/n (default is NO)");
+		String action = stringScanner();
+		if(!action.equals("y")) {
+			showMenu();
+		}
 	}
 	
-	public boolean menuAction(int menuValue, MainActivity bank) {
+	public boolean menuAction(int menuValue) {
 		boolean condition = true;
 		switch(menuValue) {
 			case 1: {
-				bank.createAccount();
+				createAccount();
 				break;
 			}
 			case 2: { 
-				bank.deleteAccount();
+				deleteAccount();
 				break;
 			}
 			case 3: { 
-				bank.payment();
+				payment();
 				break;
 			}
 			case 4: {
-				bank.withdraw();
+				withdraw();
 				break;
 			}
 			case 5: {
-				bank.moneyTransfer();
+				moneyTransfer();
 				break;
 			}
 			case 6: {
-				bank.getAllAccountsInfo();
+				getAllAccountsInfo();
 				break;
 			}
 			case 7: {
-				bank.getAccountInfo();
+				getAccountInfo();
 				break;
 			}
 			case 8: {
+				vista();
 				condition = false;
+				break;
+			}
+			case 9: {
+				try{
+					saveToFile();
+				}
+				catch(FileNotFoundException e) {
+					showDialog("File not found" + e);
+				}
 				break;
 			}
 			default: {
@@ -66,7 +78,7 @@ public class MainActivity {
 		return condition;
 	}
 
-	public boolean showMenu(MainActivity bank) {
+	public boolean showMenu() {
 		System.out.println("-------------------------");
 		System.out.println("1 - Create account");
 		System.out.println("2 - Delete account");
@@ -76,66 +88,70 @@ public class MainActivity {
 		System.out.println("6 - Show info about all accounts");
 		System.out.println("7 - Show info about filtered accounts");
 		System.out.println("8 - Exit a program");
+		System.out.println("9 - Save all active clients to file");
 		showDialog("Make a decision");
-		return menuAction(intScanner(), bank);
+		return menuAction(intScanner());
 	}
 
 	public int intScanner() {
-		try {
-			Scanner scan = new Scanner(System.in);
-			int scannedValue;
-			scannedValue = scan.nextInt();
-			scan.close();
-			return scannedValue;
+		boolean flag = true;
+		while(flag){
+			try {
+				Scanner scan = new Scanner(System.in);
+				int scannedValue;
+				scannedValue = scan.nextInt();
+				return scannedValue;
+			}
+			catch(InputMismatchException exception) {
+				showDialog("It should be a number, try one more time");
+			}
 		}
-		catch(InputMismatchException exception) {
-			showDialog("It should be a number");
-			return 0;
-		}
+		return 0;
 	}
 	
 	public double doubleScanner() {
-		try {
-			Scanner scan = new Scanner(System.in);
-			double scannedValue;
-			scannedValue = scan.nextDouble();
-			scan.close();
-			return scannedValue;
+		boolean flag = true;
+		while(flag) {
+			try {
+				Scanner scan = new Scanner(System.in);
+				double scannedValue;
+				scannedValue = scan.nextDouble();
+				return scannedValue;
+			}
+			catch(InputMismatchException exception) {
+				showDialog("It should be a number, try one more time");
+			}
 		}
-		catch(InputMismatchException exception) {
-			showDialog("It should be a number");
-			return 0;
-		}
+		
+		return 0;
 	}
 
 	public String stringScanner() {
-		try {
-			Scanner scan = new Scanner(System.in);
-			String scannedValue;
-			scannedValue = scan.nextLine();
-			scan.close();
-			return scannedValue;
+		boolean flag = true;
+		while(flag) {
+			try {
+				Scanner scan = new Scanner(System.in);
+				String scannedValue;
+				scannedValue = scan.nextLine();
+				return scannedValue;
+			}
+			catch(NoSuchElementException exception) {
+				showDialog("Why empty line? One more time please");
+			}
 		}
-		catch(NoSuchElementException exception) {
-			showDialog("Why empty line?");
-			return null;
-		}
+		return null;
 	}
 	
-	
-
 	public void showDialog(String string) {
 		System.out.println("-------------------------");
 		System.out.println(string);
 		System.out.println("-------------------------");
 	}
 	
-	public MainActivity() {
-		Clients clients[] = new Clients[500];
-		Globals globals = new Globals();
-	}
+	public MainActivity() {}
 
 	public void getAccountInfo() {
+		vista();
 		int choosenOption;
 		choosenOption = chooseParameter();
 		getAccountByParameter(choosenOption);
@@ -196,7 +212,7 @@ public class MainActivity {
 
 	public void searchByPESEL() {
 		showDialog("Give me a client PESEL");
-		int givenNumber = intScanner();
+		double givenNumber = doubleScanner();
 		boolean flag = true;
 		int i;
 		for(i = 0; i < globals.numberOfAccounts; i++) {
@@ -260,6 +276,8 @@ public class MainActivity {
 	public void showClientInfo(int i) {
 		if(clients[i].isActive){
 			System.out.println("-------------------------");
+			System.out.println("Number:");
+			System.out.println(clients[i].clientNumber);
 			System.out.println("Name:");
 			System.out.println(clients[i].clientName);
 			System.out.println("Surname:");
@@ -278,6 +296,7 @@ public class MainActivity {
 	}
 
 	public void getAllAccountsInfo() {
+		vista();
 		int i;
 		for(i=0; i < globals.numberOfAccounts; i++) {
 			showClientInfo(i);
@@ -285,76 +304,102 @@ public class MainActivity {
 	}
 		
 	public void moneyTransfer() {
+		vista();
 		showDialog("Give me a number of source client");
 		int sourceClient = intScanner();
 		showDialog("Give me a number of destination client");
 		int destinationClient = intScanner();
-		showDialog("Give me a number of moeny to transfer");
+		showDialog("Give me a number of money to transfer");
 		double moneyNo = doubleScanner();
-		if(moneyNo <= clients[sourceClient].clientResources) {
+		if(moneyNo <= clients[sourceClient].clientResources && clients[sourceClient].isActive && clients[destinationClient].isActive) {
 			clients[sourceClient].clientResources -= moneyNo;
 			clients[destinationClient].clientResources += moneyNo;
 			showDialog("Success!");
 		}
 		else {
-			showDialog("Too less money");
+			showDialog("Too less money or client does't exist");
 		}
 	}
 
 	public void withdraw() {
+		vista();
 		showDialog("Give me a number of client");
 		int sourceClient = intScanner();
-		showDialog("Give me a number of moeny to witdraw");
+		showDialog("Give me a number of money to witdraw");
 		double moneyNo = doubleScanner();
-		if(moneyNo <= clients[sourceClient].clientResources) {
+		if(moneyNo <= clients[sourceClient].clientResources && clients[sourceClient].isActive) {
 			clients[sourceClient].clientResources -= moneyNo;
 			showDialog("Success!");
 		}
 		else {
-			showDialog("Too less money");
+			showDialog("Too less money or client does't exist");
 		}
 	}
 
 	public void payment() {
+		vista();
 		showDialog("Give me a number of client");
 		int sourceClient = intScanner();
-		showDialog("Give me a number of moeny to make a payment");
+		showDialog("Give me a number of money to make a payment");
 		double moneyNo = doubleScanner();
-		if(moneyNo > 0) {
+		if(moneyNo > 0 && clients[sourceClient].isActive) {
 			clients[sourceClient].clientResources += moneyNo;
 			showDialog("Success!");
 		}
 		else {
-			showDialog("Money must be higer than 0");
+				showDialog("Money must be higer than 0 or client does't exist");
 		}
-		
 	}
 	
 	public void deleteAccount() {
+		vista();
 		showDialog("Give me a client number which you want delete");
 		int tmp = intScanner();
 		clients[tmp].isActive = false;
 	}
 
 	public void createAccount() {
+		vista();
 		creatingAccountMenu();
-		int number = intScanner();
-		int pesel = intScanner();
+		int number = globals.numberOfAccounts;
+		double pesel2 = doubleScanner();
 		String name = stringScanner();
 		String surname = stringScanner();
 		String adress = stringScanner();
 		double resources = doubleScanner();
+		long pesel = new Double(pesel2).longValue();
 		clients[globals.numberOfAccounts] = new Clients(number, pesel, name, surname, adress, resources);
 		globals.numberOfAccounts++;
 	}
 
-	private void creatingAccountMenu() {
+	public void creatingAccountMenu() {
 		showDialog("Give me all info, press ENTER after each");
+		System.out.println("-------------------------");
 		System.out.println("PESEL");
 		System.out.println("Name");
 		System.out.println("Surname");
 		System.out.println("Adress");
 		System.out.println("Strating resources");
+		System.out.println("-------------------------");
+	}
+	
+	public void saveToFile() throws FileNotFoundException {
+		vista();
+		PrintWriter save = new PrintWriter(globals.filename);
+		save.println();
+		save.println("No\tName\tSurname\tPesel\tAdress\tMoney");
+		for(int i=0; i < globals.numberOfAccounts; i++) {
+			if(clients[i].isActive) {
+				save.println(clients[i].clientNumber +	"\t" +	
+						clients[i].clientName + "\t" +		
+						clients[i].clientSurname + "\t" +	
+						clients[i].clientPesel + "\t" +	
+						clients[i].clientAdress + "\t" +	
+						clients[i].clientResources
+						);
+			}
+		}
+		save.close();
 	}
 
 }

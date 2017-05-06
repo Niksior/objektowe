@@ -1,11 +1,10 @@
-import java.nio.file.*;
 
 public class Globals {
-	Path filename;
+	String filename;
 	int numberOfAccounts;
 	
 	public Globals() {
-		filename = Paths.get("./accounts.txt");
+		filename = ("accounts.txt");
 		numberOfAccounts = 0;
 	}
 }

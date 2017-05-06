@@ -1,7 +1,7 @@
 
 public class Clients {
 	int clientNumber;
-	int clientPesel;
+	long clientPesel;
 	String clientName;
 	String clientSurname;
 	String clientAdress;
@@ -12,8 +12,14 @@ public class Clients {
 		isActive = false;
 	}
 	
-	public Clients(int number,int pesel,String name,String surname,String adress,double resources) {
+	public Clients(int number,long pesel,String name,String surname,String adress,double resources) {
 		isActive = true;
-		
+		clientNumber = number;
+		clientPesel = pesel;
+		clientName = name;
+		clientSurname = surname;
+		clientAdress = adress;
+		clientResources = resources;
 	}
+	
 }
