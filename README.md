@@ -1,1 +1,1 @@
-objektowe
+Programowanie objektowe 2

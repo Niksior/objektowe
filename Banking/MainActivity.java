@@ -62,15 +62,6 @@ public class MainActivity {
 				condition = false;
 				break;
 			}
-			case 9: {
-				try{
-					saveToFile();
-				}
-				catch(FileNotFoundException e) {
-					showDialog("File not found" + e);
-				}
-				break;
-			}
 			default: {
 				showDialog("Wrong number");
 			}
@@ -88,7 +79,6 @@ public class MainActivity {
 		System.out.println("6 - Show info about all accounts");
 		System.out.println("7 - Show info about filtered accounts");
 		System.out.println("8 - Exit a program");
-		System.out.println("9 - Save all active clients to file");
 		showDialog("Make a decision");
 		return menuAction(intScanner());
 	}
@@ -315,6 +305,7 @@ public class MainActivity {
 			clients[sourceClient].clientResources -= moneyNo;
 			clients[destinationClient].clientResources += moneyNo;
 			showDialog("Success!");
+			saveAccountsInfo();
 		}
 		else {
 			showDialog("Too less money or client does't exist");
@@ -330,6 +321,7 @@ public class MainActivity {
 		if(moneyNo <= clients[sourceClient].clientResources && clients[sourceClient].isActive) {
 			clients[sourceClient].clientResources -= moneyNo;
 			showDialog("Success!");
+			saveAccountsInfo();
 		}
 		else {
 			showDialog("Too less money or client does't exist");
@@ -345,6 +337,7 @@ public class MainActivity {
 		if(moneyNo > 0 && clients[sourceClient].isActive) {
 			clients[sourceClient].clientResources += moneyNo;
 			showDialog("Success!");
+			saveAccountsInfo();
 		}
 		else {
 				showDialog("Money must be higer than 0 or client does't exist");
@@ -356,6 +349,7 @@ public class MainActivity {
 		showDialog("Give me a client number which you want delete");
 		int tmp = intScanner();
 		clients[tmp].isActive = false;
+		saveAccountsInfo();
 	}
 
 	public void createAccount() {
@@ -370,6 +364,7 @@ public class MainActivity {
 		long pesel = new Double(pesel2).longValue();
 		clients[globals.numberOfAccounts] = new Clients(number, pesel, name, surname, adress, resources);
 		globals.numberOfAccounts++;
+		saveAccountsInfo();
 	}
 
 	public void creatingAccountMenu() {
@@ -384,7 +379,6 @@ public class MainActivity {
 	}
 	
 	public void saveToFile() throws FileNotFoundException {
-		vista();
 		PrintWriter save = new PrintWriter(globals.filename);
 		save.println();
 		save.println("No\tName\tSurname\tPesel\tAdress\tMoney");
@@ -400,6 +394,15 @@ public class MainActivity {
 			}
 		}
 		save.close();
+	}
+	
+	public void saveAccountsInfo() {
+		try{
+			saveToFile();
+		}
+		catch(FileNotFoundException e) {
+			showDialog("File not found" + e);
+		}
 	}
 
 }
