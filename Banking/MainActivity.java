@@ -404,36 +404,39 @@ public class MainActivity {
 			showDialog("File not found" + e);
 		}
 	}
-
-	/*public void readFromFile() {
-		String line = null;
-		DataInputStream inputStream = null;
+	
+	public void readFromFile() throws IOException {
+		File file = new File(globals.filename);
+		Scanner in = new Scanner(file);
+		int i = 0;
 		try {
-		    inputStream = new DataInputStream(new FileInputStream(globals.filename));
-		    line = inputStream.readLine();
-		    while(line != null) {
-		    	line = inputStream.readLine();
-			    loadClientsFromFile(line);
+		    String line = in.nextLine();
+		    if(line == null) {
+		    	showDialog("file is empty");
 		    }
-		} finally {
-			if (inputStream != null) {
-			inputStream.close();
-		  	}
+		    else {
+		    	while(line != null) {
+			    	line = in.nextLine();
+			    	loadClientsFromFile(line);
+			    }
+		    }
 		}
 	}
 	
 	public void loadClientsFromFile(String line) {
 		char tmp[] = line.toCharArray();
-		char buff[];
+		char buff[] = new char[500];
+		String clientNumber, clientName, clientSurname, clientPesel,  clientAdress, clientResources;
 		int i, j=0;
 		for(i = 0; i < tmp.length; i++) {
-			if(tmp[i] != "\t") {
+			if(tmp[i] != '\t') {
 				buff[j] = tmp [i];
 				j++;
 			}
 			else {
+				j=0;
 				
 			}
 		}
-	}*/
+	}
 }
