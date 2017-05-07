@@ -1,5 +1,6 @@
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
+//import java.io.FileNotFoundException;
+//import java.io.PrintWriter;
+import java.io.*;
 import java.util.InputMismatchException;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
@@ -380,7 +381,6 @@ public class MainActivity {
 	
 	public void saveToFile() throws FileNotFoundException {
 		PrintWriter save = new PrintWriter(globals.filename);
-		save.println();
 		save.println("No\tName\tSurname\tPesel\tAdress\tMoney");
 		for(int i=0; i < globals.numberOfAccounts; i++) {
 			if(clients[i].isActive) {
@@ -405,4 +405,35 @@ public class MainActivity {
 		}
 	}
 
+	/*public void readFromFile() {
+		String line = null;
+		DataInputStream inputStream = null;
+		try {
+		    inputStream = new DataInputStream(new FileInputStream(globals.filename));
+		    line = inputStream.readLine();
+		    while(line != null) {
+		    	line = inputStream.readLine();
+			    loadClientsFromFile(line);
+		    }
+		} finally {
+			if (inputStream != null) {
+			inputStream.close();
+		  	}
+		}
+	}
+	
+	public void loadClientsFromFile(String line) {
+		char tmp[] = line.toCharArray();
+		char buff[];
+		int i, j=0;
+		for(i = 0; i < tmp.length; i++) {
+			if(tmp[i] != "\t") {
+				buff[j] = tmp [i];
+				j++;
+			}
+			else {
+				
+			}
+		}
+	}*/
 }
