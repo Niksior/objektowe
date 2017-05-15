@@ -1,5 +1,3 @@
-//import java.io.FileNotFoundException;
-//import java.io.PrintWriter;
 import java.io.*;
 import java.util.InputMismatchException;
 import java.util.NoSuchElementException;
@@ -13,6 +11,7 @@ public class MainActivity {
 	public static void main(String[] args) {
 		MainActivity bank = new MainActivity();
 		boolean condition = true;
+		bank.loadAccountsInfo();
 		
 		while (condition) {
 			condition = bank.showMenu();
@@ -168,23 +167,37 @@ public class MainActivity {
 			break;
 		}
 		case 5: {
-			searchByClinetNumber();
+			searchByNumber();
 			break;
 		}
 		}
 	}
 
-	public void searchByClinetNumber() {
-		showDialog("Give me a client number");
-		int givenNumber = intScanner();
-		if(givenNumber < 0 || givenNumber > globals.numberOfAccounts) {
-			showDialog("There are no records");
+	public int searchByClinetNumber(int givenNumber) {
+		boolean flag = true;
+		for(int i = 0; i < globals.numberOfAccounts; i++) {
+			if(clients[i].clientNumber == givenNumber) {
+				return i;
+			}
 		}
-		else {
-			showClientInfo(givenNumber);
+		if(flag) {
+			return -1;
 		}
 	}
 
+	
+	public void searchByNumber() {
+		showDialog("Give me a client number");
+		int givenNumber = intScanner();
+		int i = searchByClinetNumber(givenNumber);
+		if(i == -1) {
+			showDialog("There was no client");
+		}
+		else {
+			showClientInfo(i);
+		}
+	}
+	
 	public void searchByAdress() {
 		showDialog("Give me a client adress");
 		String tmpAdress = stringScanner();
@@ -265,7 +278,6 @@ public class MainActivity {
 	}
 
 	public void showClientInfo(int i) {
-		if(clients[i].isActive){
 			System.out.println("-------------------------");
 			System.out.println("Number:");
 			System.out.println(clients[i].clientNumber);
@@ -280,10 +292,6 @@ public class MainActivity {
 			System.out.println("Money:");
 			System.out.println(clients[i].clientResources);
 			System.out.println("-------------------------");
-		}
-		else {
-			showDialog("This client no longer exist, his no = " + i);
-		}
 	}
 
 	public void getAllAccountsInfo() {
@@ -296,52 +304,71 @@ public class MainActivity {
 		
 	public void moneyTransfer() {
 		vista();
+		int sourceClient, destinationClient;
 		showDialog("Give me a number of source client");
-		int sourceClient = intScanner();
+		int tmp = intScanner();
+		sourceClient = searchByClinetNumber(tmp);
 		showDialog("Give me a number of destination client");
-		int destinationClient = intScanner();
+		int tmp2 = intScanner();
+		destinationClient = searchByClinetNumber(tmp2);
+		if(sourceClient == -1 || destinationClient == -1) {
+			showDialog("Client don't exist");
+			return;
+		}
 		showDialog("Give me a number of money to transfer");
 		double moneyNo = doubleScanner();
-		if(moneyNo <= clients[sourceClient].clientResources && clients[sourceClient].isActive && clients[destinationClient].isActive) {
+		if(moneyNo <= clients[sourceClient].clientResources) {
 			clients[sourceClient].clientResources -= moneyNo;
 			clients[destinationClient].clientResources += moneyNo;
 			showDialog("Success!");
 			saveAccountsInfo();
 		}
 		else {
-			showDialog("Too less money or client does't exist");
+			showDialog("Too less money");
 		}
 	}
 
 	public void withdraw() {
 		vista();
 		showDialog("Give me a number of client");
-		int sourceClient = intScanner();
+		int sourceClient;
+		int tmp = intScanner();
+		sourceClient = searchByClinetNumber(tmp);
+		if(sourceClient == -1) {
+			showDialog("Client don't exist");
+			return;
+		}
 		showDialog("Give me a number of money to witdraw");
 		double moneyNo = doubleScanner();
-		if(moneyNo <= clients[sourceClient].clientResources && clients[sourceClient].isActive) {
+		if(moneyNo <= clients[sourceClient].clientResources) {
 			clients[sourceClient].clientResources -= moneyNo;
 			showDialog("Success!");
 			saveAccountsInfo();
 		}
 		else {
-			showDialog("Too less money or client does't exist");
+			showDialog("Too less money");
 		}
 	}
 
 	public void payment() {
 		vista();
 		showDialog("Give me a number of client");
-		int sourceClient = intScanner();
+		int sourceClient;
+		int tmp = intScanner();
+		sourceClient = searchByClinetNumber(tmp);
+		if(sourceClient == -1) {
+			showDialog("Client don't exist");
+			return;
+		}
 		showDialog("Give me a number of money to make a payment");
 		double moneyNo = doubleScanner();
-		if(moneyNo > 0 && clients[sourceClient].isActive) {
+		if(moneyNo > 0) {
 			clients[sourceClient].clientResources += moneyNo;
 			showDialog("Success!");
 			saveAccountsInfo();
 		}
 		else {
-				showDialog("Money must be higer than 0 or client does't exist");
+				showDialog("Money must be higer than 0");
 		}
 	}
 	
@@ -349,14 +376,17 @@ public class MainActivity {
 		vista();
 		showDialog("Give me a client number which you want delete");
 		int tmp = intScanner();
-		clients[tmp].isActive = false;
+		for(int i = tmp; i < globals.numberOfAccounts; i++) {
+			clients[i] = clients[i+1];
+		}
+		globals.numberOfAccounts--;
 		saveAccountsInfo();
 	}
 
 	public void createAccount() {
 		vista();
 		creatingAccountMenu();
-		int number = globals.numberOfAccounts;
+		int number = globals.maxClientNumber;
 		double pesel2 = doubleScanner();
 		String name = stringScanner();
 		String surname = stringScanner();
@@ -365,6 +395,7 @@ public class MainActivity {
 		long pesel = new Double(pesel2).longValue();
 		clients[globals.numberOfAccounts] = new Clients(number, pesel, name, surname, adress, resources);
 		globals.numberOfAccounts++;
+		globals.maxClientNumber++;
 		saveAccountsInfo();
 	}
 
@@ -379,64 +410,72 @@ public class MainActivity {
 		System.out.println("-------------------------");
 	}
 	
-	public void saveToFile() throws FileNotFoundException {
-		PrintWriter save = new PrintWriter(globals.filename);
-		save.println("No\tName\tSurname\tPesel\tAdress\tMoney");
+	public void saveAccountsInfo2() {
+		try{
+		FileOutputStream fileOut = new FileOutputStream(globals.filename);
+		ObjectOutputStream out = new ObjectOutputStream(fileOut);
 		for(int i=0; i < globals.numberOfAccounts; i++) {
-			if(clients[i].isActive) {
-				save.println(clients[i].clientNumber +	"\t" +	
-						clients[i].clientName + "\t" +		
-						clients[i].clientSurname + "\t" +	
-						clients[i].clientPesel + "\t" +	
-						clients[i].clientAdress + "\t" +	
-						clients[i].clientResources
-						);
-			}
+			out.writeObject(clients[i]);
 		}
+		out.close();
+		fileOut.close();
+		}
+		catch(IOException e) {
+			showDialog("There was no file to load");
+		}
+	}
+	
+	public void saveToFile() throws FileNotFoundException {
+		PrintWriter save = new PrintWriter(globals.fileWithNumberOfAccounts);
+		save.println(globals.numberOfAccounts);
+		save.println(globals.maxClientNumber);
 		save.close();
 	}
 	
 	public void saveAccountsInfo() {
 		try{
 			saveToFile();
+			saveAccountsInfo2();
 		}
 		catch(FileNotFoundException e) {
-			showDialog("File not found" + e);
+			showDialog("There was no file to load");
 		}
 	}
 	
-	public void readFromFile() throws IOException {
-		File file = new File(globals.filename);
+	public void readNumberOfAccounts() throws IOException {
+		File file = new File(globals.fileWithNumberOfAccounts);
 		Scanner in = new Scanner(file);
-		int i = 0;
-		try {
-		    String line = in.nextLine();
-		    if(line == null) {
-		    	showDialog("file is empty");
-		    }
-		    else {
-		    	while(line != null) {
-			    	line = in.nextLine();
-			    	loadClientsFromFile(line);
-			    }
-		    }
-		}
+		globals.numberOfAccounts = in.nextInt();
+		globals.maxClientNumber = in.nextInt();
 	}
 	
-	public void loadClientsFromFile(String line) {
-		char tmp[] = line.toCharArray();
-		char buff[] = new char[500];
-		String clientNumber, clientName, clientSurname, clientPesel,  clientAdress, clientResources;
-		int i, j=0;
-		for(i = 0; i < tmp.length; i++) {
-			if(tmp[i] != '\t') {
-				buff[j] = tmp [i];
-				j++;
-			}
-			else {
-				j=0;
-				
-			}
+	public void loadAccountsInfo2() {
+      try {
+         FileInputStream fileIn = new FileInputStream(globals.filename);
+         ObjectInputStream in = new ObjectInputStream(fileIn);
+		 for(int i=0; i<globals.numberOfAccounts; i++) {	 
+			 clients[i] = (Clients) in.readObject();
+		 }
+         in.close();
+         fileIn.close();
+      }catch(IOException i) {
+         showDialog("There was no file to load");
+         return;
+      }catch(ClassNotFoundException c) {
+         System.out.println("Employee class not found");
+         c.printStackTrace();
+         return;
+      }
+      
+	}
+	
+	public void loadAccountsInfo() {
+		try{
+			readNumberOfAccounts();
+			loadAccountsInfo2();
+		}
+		catch(IOException e) {
+			showDialog("There was no file to load");
 		}
 	}
 }
