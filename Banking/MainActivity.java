@@ -7,17 +7,17 @@ public class MainActivity {
 
 	Clients clients[] = new Clients[500];
 	Globals globals = new Globals();
-	
+
 	public static void main(String[] args) {
 		MainActivity bank = new MainActivity();
 		boolean condition = true;
 		bank.loadAccountsInfo();
-		
+
 		while (condition) {
 			condition = bank.showMenu();
 		}
 	}
-	
+
 	public void vista() {
 		showDialog("Do you really want to make this action? y/n (default is NO)");
 		String action = stringScanner();
@@ -25,7 +25,7 @@ public class MainActivity {
 			showMenu();
 		}
 	}
-	
+
 	public boolean menuAction(int menuValue) {
 		boolean condition = true;
 		switch(menuValue) {
@@ -33,11 +33,11 @@ public class MainActivity {
 				createAccount();
 				break;
 			}
-			case 2: { 
+			case 2: {
 				deleteAccount();
 				break;
 			}
-			case 3: { 
+			case 3: {
 				payment();
 				break;
 			}
@@ -98,7 +98,7 @@ public class MainActivity {
 		}
 		return 0;
 	}
-	
+
 	public double doubleScanner() {
 		boolean flag = true;
 		while(flag) {
@@ -112,7 +112,7 @@ public class MainActivity {
 				showDialog("It should be a number, try one more time");
 			}
 		}
-		
+
 		return 0;
 	}
 
@@ -131,13 +131,13 @@ public class MainActivity {
 		}
 		return null;
 	}
-	
+
 	public void showDialog(String string) {
 		System.out.println("-------------------------");
 		System.out.println(string);
 		System.out.println("-------------------------");
 	}
-	
+
 	public MainActivity() {}
 
 	public void getAccountInfo() {
@@ -148,7 +148,7 @@ public class MainActivity {
 		showDialog("End of accounts");
 	}
 
-	public void getAccountByParameter(int choosenOption) {		
+	public void getAccountByParameter(int choosenOption) {
 		switch(choosenOption) {
 		case 1: {
 			searchByName();
@@ -185,7 +185,7 @@ public class MainActivity {
 		}
 	}
 
-	
+
 	public void searchByNumber() {
 		showDialog("Give me a client number");
 		int givenNumber = intScanner();
@@ -197,7 +197,7 @@ public class MainActivity {
 			showClientInfo(i);
 		}
 	}
-	
+
 	public void searchByAdress() {
 		showDialog("Give me a client adress");
 		String tmpAdress = stringScanner();
@@ -301,7 +301,7 @@ public class MainActivity {
 			showClientInfo(i);
 		}
 	}
-		
+
 	public void moneyTransfer() {
 		vista();
 		int sourceClient, destinationClient;
@@ -371,7 +371,7 @@ public class MainActivity {
 				showDialog("Money must be higer than 0");
 		}
 	}
-	
+
 	public void deleteAccount() {
 		vista();
 		showDialog("Give me a client number which you want delete");
@@ -393,7 +393,7 @@ public class MainActivity {
 		String adress = stringScanner();
 		double resources = doubleScanner();
 		long pesel = new Double(pesel2).longValue();
-		clients[globals.numberOfAccounts] = new Clients(number, pesel, name, surname, adress, resources);
+		clients[globals.maxClientNumber] = new Clients(number, pesel, name, surname, adress, resources);
 		globals.numberOfAccounts++;
 		globals.maxClientNumber++;
 		saveAccountsInfo();
@@ -409,7 +409,7 @@ public class MainActivity {
 		System.out.println("Strating resources");
 		System.out.println("-------------------------");
 	}
-	
+
 	public void saveAccountsInfo2() {
 		try{
 		FileOutputStream fileOut = new FileOutputStream(globals.filename);
@@ -424,14 +424,14 @@ public class MainActivity {
 			showDialog("There was no file to load");
 		}
 	}
-	
+
 	public void saveToFile() throws FileNotFoundException {
 		PrintWriter save = new PrintWriter(globals.fileWithNumberOfAccounts);
 		save.println(globals.numberOfAccounts);
 		save.println(globals.maxClientNumber);
 		save.close();
 	}
-	
+
 	public void saveAccountsInfo() {
 		try{
 			saveToFile();
@@ -441,19 +441,19 @@ public class MainActivity {
 			showDialog("There was no file to load");
 		}
 	}
-	
+
 	public void readNumberOfAccounts() throws IOException {
 		File file = new File(globals.fileWithNumberOfAccounts);
 		Scanner in = new Scanner(file);
 		globals.numberOfAccounts = in.nextInt();
 		globals.maxClientNumber = in.nextInt();
 	}
-	
+
 	public void loadAccountsInfo2() {
       try {
          FileInputStream fileIn = new FileInputStream(globals.filename);
          ObjectInputStream in = new ObjectInputStream(fileIn);
-		 for(int i=0; i<globals.numberOfAccounts; i++) {	 
+		 for(int i=0; i<globals.numberOfAccounts; i++) {
 			 clients[i] = (Clients) in.readObject();
 		 }
          in.close();
@@ -466,9 +466,9 @@ public class MainActivity {
          c.printStackTrace();
          return;
       }
-      
+
 	}
-	
+
 	public void loadAccountsInfo() {
 		try{
 			readNumberOfAccounts();
