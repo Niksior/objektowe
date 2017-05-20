@@ -382,6 +382,7 @@ public class MainActivity {
 			vista();
 			readNumberOfAccounts();
 			loadAccountsInfo2();
+			showDialog("Loaded");
 		}
 		catch(IOException e) {
 			showDialog("There was no file to load");
