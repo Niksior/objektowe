@@ -1,20 +1,51 @@
+import java.io.*;
+import java.util.InputMismatchException;
+import java.util.NoSuchElementException;
+import java.util.Scanner;
 
 public class Saving {
 
-	public static Clients main(String[] args) {
-		int clientNumber = Integer.parseInt(args[0]);
-		long clientPesel = new Double(Double.parseDouble(args[3])).longValue();
-		String clientName = args[1];
-		String clientSurname = args[2];
-		String clientAdress = args[4];
-		double clientResources = Double.parseDouble(args[5]);
-		
-		Clients client = new Clients(clientNumber, clientPesel, clientName, clientSurname, clientAdress, clientResources);
-		return client;
+	public Saving() { }
+
+	public void showDialog(String string) {
+		System.out.println("-------------------------");
+		System.out.println(string);
+		System.out.println("-------------------------");
 	}
-	
-	public Saving(String line) {
-		main(line);
+
+	public void saveAccountsInfo(Globals globals, Clients clients[]) {
+		try{
+			saveToFile(globals, clients);
+			saveAccountsInfo2(globals, clients);
+		}
+		catch(FileNotFoundException e) {
+			showDialog("There was no file to load");
+		}
 	}
+
+	public void saveToFile(Globals globals, Clients clients[]) throws FileNotFoundException {
+		PrintWriter save = new PrintWriter(globals.fileWithNumberOfAccounts);
+		save.println(globals.numberOfAccounts);
+		save.println(globals.maxClientNumber);
+		save.close();
+	}
+
+	public void saveAccountsInfo2(Globals globals, Clients clients[]) {
+		try{
+		FileOutputStream fileOut = new FileOutputStream(globals.filename);
+		ObjectOutputStream out = new ObjectOutputStream(fileOut);
+		for(int i=0; i < globals.numberOfAccounts; i++) {
+			out.writeObject(clients[i]);
+		}
+		out.close();
+		fileOut.close();
+		}
+		catch(IOException e) {
+			showDialog("There was no file to load");
+		}
+	}
+
+
+
 
 }
