@@ -1,10 +1,11 @@
+
 public class Globals {
 	String filename;
 	String fileWithNumberOfAccounts;
 	int numberOfAccounts;
 	int maxClientNumber;
 	
-	Globals() {
+	public Globals() {
 		filename = ("accounts.ser");
 		fileWithNumberOfAccounts = ("fileWithNumberOfAccounts.txt");
 		numberOfAccounts = 0;

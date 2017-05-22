@@ -26,4 +26,12 @@ public class Player implements java.io.Serializable {
     public void setScore(int scr) {
         score = scr;
     }
+    
+    public int getScore() {
+        return this.score;
+    }
+    
+    public String getName() {
+        return this.nick;
+    }
 }

@@ -12,12 +12,12 @@ import java.io.ObjectOutputStream;
  */
 public final class ScoreBoard {
    
-    private Player scores[];
+    private final Player scores[];
     private int amountOfPlayers;
-    private String fileName;
+    private final String fileName;
     
     ScoreBoard() {
-        this.fileName = "scores.txt";
+        this.fileName = "~/scores.txt";
         this.scores = new Player[500];
         this.amountOfPlayers = 0;
         loadFromFile();
@@ -34,7 +34,7 @@ public final class ScoreBoard {
             fileOut.close();
         }
 	catch(IOException e) {
-            System.out.println("There was no file to load");
+            System.out.println("There was no file to save");
 	}
     }
     
@@ -50,6 +50,7 @@ public final class ScoreBoard {
             fileIn.close();
        }catch(IOException i) {
          System.out.println("There was no file to load");
+         System.out.println("Creating file");
        }catch(ClassNotFoundException c) {
          System.out.println("Employee class not found");
       }

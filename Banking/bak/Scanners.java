@@ -4,7 +4,7 @@ import java.util.Scanner;
 
 public class Scanners {
 
-    Scanners() { }
+    public Scanners() { }
 
     public void showDialog(String string) {
 		System.out.println("-------------------------");

@@ -1,9 +1,5 @@
 package snake;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.PrintWriter;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
@@ -51,7 +47,8 @@ public class Snake extends Application {
         
         btn.setOnAction((ActionEvent e) -> {
             ScoreBoard scoreBoard = new ScoreBoard();
-            scoreBoard.newPlayer((String) userTextField.getCharacters());
+            String tmp = userTextField.getCharacters().toString();
+            scoreBoard.newPlayer(tmp);
             SnakeMenu.launch();
         });
         

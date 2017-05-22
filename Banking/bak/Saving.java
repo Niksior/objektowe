@@ -5,7 +5,7 @@ import java.util.Scanner;
 
 public class Saving {
 
-	Saving() { }
+	public Saving() { }
 
 	public void showDialog(String string) {
 		System.out.println("-------------------------");

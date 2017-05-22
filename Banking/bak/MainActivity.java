@@ -9,10 +9,7 @@ public class MainActivity {
 	Globals globals = new Globals();
 	Scanners scanners = new Scanners();
 	Saving saving = new Saving();
-	Searching searching = new Searching();
 
-	MainActivity() {}
-	
 	public static void main(String[] args) {
 		MainActivity bank = new MainActivity();
 		boolean condition = true;
@@ -98,6 +95,8 @@ public class MainActivity {
 		System.out.println("-------------------------");
 	}
 
+	public MainActivity() {}
+
 	public void getAccountInfo() {
 		vista();
 		int choosenOption;
@@ -109,25 +108,115 @@ public class MainActivity {
 	public void getAccountByParameter(int choosenOption) {
 		switch(choosenOption) {
 		case 1: {
-			searching.searchByName(globals, clients);
+			searchByName();
 			break;
 		}
 		case 2: {
-			searching.searchBySurname(globals, clients);
+			searchBySurname();
 			break;
 		}
 		case 3: {
-			searching.searchByPESEL(globals, clients);
+			searchByPESEL();
 			break;
 		}
 		case 4: {
-			searching.searchByAdress(globals, clients);
+			searchByAdress();
 			break;
 		}
 		case 5: {
-			searching.searchByNumber(globals, clients);
+			searchByNumber();
 			break;
 		}
+		}
+	}
+
+	public int searchByClinetNumber(int givenNumber) {
+		boolean flag = true;
+		for(int i = 0; i < globals.numberOfAccounts; i++) {
+			if(clients[i].clientNumber == givenNumber) {
+				return i;
+			}
+		}
+		if(flag) {
+			return -1;
+		}
+		return -2;
+	}
+
+
+	public void searchByNumber() {
+		showDialog("Give me a client number");
+		int givenNumber = scanners.intScanner();
+		int i = searchByClinetNumber(givenNumber);
+		if(i == -1) {
+			showDialog("There was no client");
+		}
+		else {
+			showClientInfo(i);
+		}
+	}
+
+	public void searchByAdress() {
+		showDialog("Give me a client adress");
+		String tmpAdress = scanners.stringScanner();
+		boolean flag = true;
+		int i;
+		for(i = 0; i < globals.numberOfAccounts; i++) {
+			if(tmpAdress.equals(clients[i].clientAdress)) {
+				flag = false;
+				showClientInfo(i);
+			}
+		}
+		if(flag) {
+			showDialog("There are no records");
+		}
+	}
+
+	public void searchByPESEL() {
+		showDialog("Give me a client PESEL");
+		double givenNumber = scanners.doubleScanner();
+		boolean flag = true;
+		int i;
+		for(i = 0; i < globals.numberOfAccounts; i++) {
+			if(givenNumber == clients[i].clientPesel) {
+				flag = false;
+				showClientInfo(i);
+			}
+		}
+		if(flag) {
+			showDialog("There are no records");
+		}
+	}
+
+	public void searchBySurname() {
+		showDialog("Give me a client surname");
+		String tmpAdress = scanners.stringScanner();
+		boolean flag = true;
+		int i;
+		for(i = 0; i < globals.numberOfAccounts; i++) {
+			if(tmpAdress.equals(clients[i].clientSurname)) {
+				flag = false;
+				showClientInfo(i);
+			}
+		}
+		if(flag) {
+			showDialog("There are no records");
+		}
+	}
+
+	public void searchByName() {
+		showDialog("Give me a client name");
+		String tmpAdress = scanners.stringScanner();
+		boolean flag = true;
+		int i;
+		for(i = 0; i < globals.numberOfAccounts; i++) {
+			if(tmpAdress.equals(clients[i].clientName)) {
+				flag = false;
+				showClientInfo(i);
+			}
+		}
+		if(flag) {
+			showDialog("There are no records");
 		}
 	}
 
@@ -179,10 +268,10 @@ public class MainActivity {
 		int sourceClient, destinationClient;
 		showDialog("Give me a number of source client");
 		int tmp = scanners.intScanner();
-		sourceClient = searching.searchByClinetNumber(globals, clients, tmp);
+		sourceClient = searchByClinetNumber(tmp);
 		showDialog("Give me a number of destination client");
 		int tmp2 = scanners.intScanner();
-		destinationClient = searching.searchByClinetNumber(globals, clients, tmp2);
+		destinationClient = searchByClinetNumber(tmp2);
 		if(sourceClient == -1 || destinationClient == -1) {
 			showDialog("Client don't exist");
 			return;
@@ -210,7 +299,7 @@ public class MainActivity {
 		showDialog("Give me a number of client");
 		int sourceClient;
 		int tmp = scanners.intScanner();
-		sourceClient = searching.searchByClinetNumber(globals, clients, tmp);
+		sourceClient = searchByClinetNumber(tmp);
 		if(sourceClient == -1) {
 			showDialog("Client don't exist");
 			return;
@@ -237,7 +326,7 @@ public class MainActivity {
 		showDialog("Give me a number of client");
 		int sourceClient;
 		int tmp = scanners.intScanner();
-		sourceClient = searching.searchByClinetNumber(globals, clients, tmp);
+		sourceClient = searchByClinetNumber(tmp);
 		if(sourceClient == -1) {
 			showDialog("Client don't exist");
 			return;
@@ -258,7 +347,7 @@ public class MainActivity {
 		vista();
 		showDialog("Give me a client number which you want delete");
 		int tmp = scanners.intScanner();
-		tmp = searching.searchByClinetNumber(globals, clients, tmp);
+		tmp = searchByClinetNumber(tmp);
 		if(tmp == -1) {
 			showDialog("Client does not exist");
 		}
