@@ -288,7 +288,7 @@ public class MainActivity {
 	}
 
 	public void creatingAccountMenu() {
-		showDialog("Give me all info, press ENTER after each");
+		showDialog("Give me all info, press ENTERhttp://beginnersbook.com/2013/12/java-arraylist/ after each");
 		System.out.println("-------------------------");
 		System.out.println("PESEL");
 		System.out.println("Name");
@@ -303,7 +303,6 @@ public class MainActivity {
 			vista();
 			readNumberOfAccounts();
 			loadAccountsInfo2();
-			showDialog("Loaded");
 		}
 		catch(IOException e) {
 			showDialog("There was no file to load");
@@ -326,6 +325,7 @@ public class MainActivity {
 		 }
          in.close();
          fileIn.close();
+		 showDialog("Loaded");
       }catch(IOException i) {
          showDialog("There was no file to load");
          return;
