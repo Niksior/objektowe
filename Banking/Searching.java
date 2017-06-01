@@ -1,12 +1,15 @@
+import java.util.ArrayList;
+import java.util.List;
+
 public class Searching {
 	Scanners scanners = new Scanners();
-	
+
 	Searching () { }
-	
-	public int searchByClinetNumber(Globals globals, Clients clients[], int givenNumber) {
+
+	public int searchByClinetNumber(Globals globals, List<Clients> clients, int givenNumber) {
 		boolean flag = true;
-		for(int i = 0; i < globals.numberOfAccounts; i++) {
-			if(clients[i].clientNumber == givenNumber) {
+		for(int i = 0; i < clients.size(); i++) {
+			if(clients.get(i).clientNumber == givenNumber) {
 				return i;
 			}
 		}
@@ -17,7 +20,7 @@ public class Searching {
 	}
 
 
-	public void searchByNumber(Globals globals, Clients clients[]) {
+	public void searchByNumber(Globals globals, List<Clients> clients) {
 		showDialog("Give me a client number");
 		int givenNumber = scanners.intScanner();
 		int i = searchByClinetNumber(globals, clients, givenNumber);
@@ -29,13 +32,13 @@ public class Searching {
 		}
 	}
 
-	public void searchByAdress(Globals globals, Clients clients[]) {
+	public void searchByAdress(Globals globals, List<Clients> clients) {
 		showDialog("Give me a client adress");
 		String tmpAdress = scanners.stringScanner();
 		boolean flag = true;
 		int i;
-		for(i = 0; i < globals.numberOfAccounts; i++) {
-			if(tmpAdress.equals(clients[i].clientAdress)) {
+		for(i = 0; i < clients.size(); i++) {
+			if(tmpAdress.equals(clients.get(i).clientAdress)) {
 				flag = false;
 				showClientInfo(clients, i);
 			}
@@ -45,13 +48,13 @@ public class Searching {
 		}
 	}
 
-	public void searchByPESEL(Globals globals, Clients clients[]) {
+	public void searchByPESEL(Globals globals, List<Clients> clients) {
 		showDialog("Give me a client PESEL");
 		double givenNumber = scanners.doubleScanner();
 		boolean flag = true;
 		int i;
-		for(i = 0; i < globals.numberOfAccounts; i++) {
-			if(givenNumber == clients[i].clientPesel) {
+		for(i = 0; i < clients.size(); i++) {
+			if(givenNumber == clients.get(i).clientPesel) {
 				flag = false;
 				showClientInfo(clients, i);
 			}
@@ -61,13 +64,13 @@ public class Searching {
 		}
 	}
 
-	public void searchBySurname(Globals globals, Clients clients[]) {
+	public void searchBySurname(Globals globals, List<Clients> clients) {
 		showDialog("Give me a client surname");
 		String tmpAdress = scanners.stringScanner();
 		boolean flag = true;
 		int i;
-		for(i = 0; i < globals.numberOfAccounts; i++) {
-			if(tmpAdress.equals(clients[i].clientSurname)) {
+		for(i = 0; i < clients.size(); i++) {
+			if(tmpAdress.equals(clients.get(i).clientSurname)) {
 				flag = false;
 				showClientInfo(clients, i);
 			}
@@ -77,13 +80,13 @@ public class Searching {
 		}
 	}
 
-	public void searchByName(Globals globals, Clients clients[]) {
+	public void searchByName(Globals globals, List<Clients> clients) {
 		showDialog("Give me a client name");
 		String tmpAdress = scanners.stringScanner();
 		boolean flag = true;
 		int i;
-		for(i = 0; i < globals.numberOfAccounts; i++) {
-			if(tmpAdress.equals(clients[i].clientName)) {
+		for(i = 0; i < clients.size(); i++) {
+			if(tmpAdress.equals(clients.get(i).clientName)) {
 				flag = false;
 				showClientInfo(clients, i);
 			}
@@ -92,27 +95,27 @@ public class Searching {
 			showDialog("There are no records");
 		}
 	}
-	
+
 	public void showDialog(String string) {
 		System.out.println("-------------------------");
 		System.out.println(string);
 		System.out.println("-------------------------");
 	}
-	
-	public void showClientInfo(Clients clients[] ,int i) {
+
+	public void showClientInfo(List<Clients> clients ,int i) {
 			System.out.println("-------------------------");
 			System.out.println("Number:");
-			System.out.println(clients[i].clientNumber);
+			System.out.println(clients.get(i).clientNumber);
 			System.out.println("Name:");
-			System.out.println(clients[i].clientName);
+			System.out.println(clients.get(i).clientName);
 			System.out.println("Surname:");
-			System.out.println(clients[i].clientSurname);
+			System.out.println(clients.get(i).clientSurname);
 			System.out.println("PESEL:");
-			System.out.println(clients[i].clientPesel);
+			System.out.println(clients.get(i).clientPesel);
 			System.out.println("Adress:");
-			System.out.println(clients[i].clientAdress);
+			System.out.println(clients.get(i).clientAdress);
 			System.out.println("Money:");
-			System.out.println(clients[i].clientResources);
+			System.out.println(clients.get(i).clientResources);
 			System.out.println("-------------------------");
 	}
 }

@@ -7,9 +7,9 @@ public class Clients implements java.io.Serializable {
 	String clientSurname;
 	String clientAdress;
 	double clientResources;
-	
+
 	Clients() {	}
-	
+
 	Clients(int number,long pesel,String name,String surname,String adress,double resources) {
 		clientNumber = number;
 		clientPesel = pesel;
@@ -18,5 +18,5 @@ public class Clients implements java.io.Serializable {
 		clientAdress = adress;
 		clientResources = resources;
 	}
-	
+
 }
