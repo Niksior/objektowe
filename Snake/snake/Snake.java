@@ -49,7 +49,9 @@ public class Snake extends Application {
             ScoreBoard scoreBoard = new ScoreBoard();
             String tmp = userTextField.getCharacters().toString();
             scoreBoard.newPlayer(tmp);
-            SnakeMenu.launch();
+            SnakeMenu snakeMenu = new SnakeMenu();
+            primaryStage.hide();
+            snakeMenu.menu();
         });
         
         Scene scene = new Scene(grid, 400, 275);

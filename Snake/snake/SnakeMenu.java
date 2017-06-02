@@ -1,34 +1,20 @@
 package snake;
 
-import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
-import javafx.scene.text.Text;
-import javafx.stage.Stage;
-
 /**
  *
  * @author niksior
  */
 
-//napisać siatkę
-//kompiluj javac
-//zrób jar -cvfm myJar.jar myManifest.txt *.class
-//java -jar myJar.jar
-public class SnakeMenu extends Application {
-    
-    @Override
-    public void start(Stage primaryStage) {
-        
+public class SnakeMenu {
+	
+	public Scene menu() {
+		 
         HBox hbBtn = new HBox(10);
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
@@ -53,16 +39,8 @@ public class SnakeMenu extends Application {
         
         
         Scene scene = new Scene(grid, 400, 275);
-        primaryStage.setTitle("Menu");
-        primaryStage.setScene(scene);
-        primaryStage.show();
+        return scene;
     }
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-        launch(args);
-    }
-    
+       
 }
+    

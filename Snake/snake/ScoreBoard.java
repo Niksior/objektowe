@@ -5,6 +5,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  *
@@ -12,14 +14,11 @@ import java.io.ObjectOutputStream;
  */
 public final class ScoreBoard {
    
-    private final Player scores[];
-    private int amountOfPlayers;
+    private final List<Player> scores = new ArrayList<Player>();
     private final String fileName;
     
     ScoreBoard() {
-        this.fileName = "~/scores.txt";
-        this.scores = new Player[500];
-        this.amountOfPlayers = 0;
+        this.fileName = "scores.txt";
         loadFromFile();
     }
     
@@ -27,8 +26,8 @@ public final class ScoreBoard {
         try{
             FileOutputStream fileOut = new FileOutputStream(fileName);
             ObjectOutputStream out = new ObjectOutputStream(fileOut);
-            for(int i=0; i < amountOfPlayers; i++) {
-		out.writeObject(scores[i]);
+            for(int i=0; i < scores.size(); i++) {
+            	out.writeObject(scores.get(i));
             }
             out.close();
             fileOut.close();
@@ -42,9 +41,8 @@ public final class ScoreBoard {
         try {
             FileInputStream fileIn = new FileInputStream(fileName);
             ObjectInputStream in = new ObjectInputStream(fileIn);
-            if(in.available() > 0) {
-                 scores[amountOfPlayers] = (Player) in.readObject();
-                 amountOfPlayers++;
+            while(fileIn.available() > 0) {
+                 scores.add((Player) in.readObject());
             }
             in.close();
             fileIn.close();
@@ -57,13 +55,12 @@ public final class ScoreBoard {
     }
     
     public void newPlayer(String name) {
-        scores[amountOfPlayers] = new Player(name, 0);
-        amountOfPlayers++;
+        scores.add(new Player(name, 0));
         saveToFile();
     }
     
     public void setScore(int score) {
-        scores[amountOfPlayers--].setScore(score);
+        scores.get(scores.size()-1).setScore(score);
         saveToFile();
     }
     
