@@ -309,6 +309,7 @@ public class MainActivity {
 		 }
          in.close();
          fileIn.close();
+				 globals.maxClientNumber = clients.get(clients.size()-1).clientNumber + 1;
 		 showDialog("Loaded");
       }catch(IOException i) {
          showDialog("There was no file to load");
