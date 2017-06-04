@@ -21,7 +21,6 @@ public final class ScoreBoard {
         try{
             FileOutputStream fileOut = new FileOutputStream(fileName);
             ObjectOutputStream out = new ObjectOutputStream(fileOut);
-            clearTheList();
             for(int i=0; i < scores.size(); i++) {
             	out.writeObject(scores.get(i));
             }
@@ -42,7 +41,6 @@ public final class ScoreBoard {
             }
             in.close();
             fileIn.close();
-            clearTheList();
             return scores;
        }catch(IOException i) {
          System.out.println("There was no file to load");
@@ -60,6 +58,7 @@ public final class ScoreBoard {
     public void setScore(int score) {
     	loadFromFile();
         scores.get(scores.size()-1).setScore(score);
+        clearTheList();
         saveToFile(scores);
     }
     
