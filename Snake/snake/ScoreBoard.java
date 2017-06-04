@@ -56,7 +56,7 @@ public final class ScoreBoard {
     }
     
     public void newPlayer(String name) {
-        scores.add(new Player(name, 0));
+        scores.add(new Player(name));
         saveToFile(scores);
     }
     

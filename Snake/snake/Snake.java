@@ -6,15 +6,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
@@ -33,13 +36,9 @@ public class Snake extends Application {
     	this.stage = primaryStage;
     	scores = scoreBoard.loadFromFile();
     	
-    	switchMenu();
-    	
-    	GridPane grid = new GridPane();
-        
+    	switchMenu(); 
         stage.setTitle("Snake!");
-        stage.setScene(new Scene(grid));
-        stage.show();
+
     }
 
 	
@@ -62,10 +61,13 @@ public class Snake extends Application {
         grid.add(btnExit, 0, 2);
         
         btnScrBrd.setOnAction((ActionEvent e) -> {
+        	stage.hide();
+        	clearTheList();
         	showScores();
         });
         
         btnNewGame.setOnAction((ActionEvent e) -> {
+        	stage.hide();
         	welcomeInGame();
         });
         
@@ -73,34 +75,38 @@ public class Snake extends Application {
         	stage.close();
         });
         
-        stage.setScene(new Scene(grid, 400, 275));
-        
+        stage.setScene(new Scene(grid, 300, 200));
+        stage.show();
 	}
 	
 	private void showScores() {
-		GridPane grid = new GridPane();
-		grid.setAlignment(Pos.BASELINE_LEFT);
-		grid.setHgap(2);
-        grid.setVgap(4);
-        grid.setPadding(new Insets(25, 25, 25, 25));
-        
-        int height = scores.size()*25+50;
-		int lenght = 500;
-		
-		for(int i = 0; i < scores.size(); i++) {
-			
-		}
-		
-		stage.setScene(new Scene(grid, height, lenght));
+		 AnchorPane anchorPane = new AnchorPane();
+	     ListView<String> list = new ListView<String>();
+	     ObservableList<String> personData = FXCollections.observableArrayList();
+	     for(int i = 0; i < scores.size(); i++) {
+	    	 personData.add(scores.get(i).getName() + ": " + scores.get(i).getScore());
+	     }
+	     list.setItems(personData);
+	     
+	     AnchorPane.setTopAnchor(list, 10.0);
+	     AnchorPane.setLeftAnchor(list, 10.0);
+	     AnchorPane.setRightAnchor(list, 65.0);
+	     Button btnGoBack = new Button("Back");
+	     AnchorPane.setTopAnchor(btnGoBack, 10.0);
+	     AnchorPane.setRightAnchor(btnGoBack, 10.0);
+	     anchorPane.getChildren().addAll(list, btnGoBack);
+	     stage.setScene(new Scene(anchorPane));
+	     stage.show();
+	     btnGoBack.setOnAction((ActionEvent e) -> {
+	        	stage.hide();
+	        	switchMenu();
+	        });
 	}
 
 
 	private void welcomeInGame() {
 		 Button btn = new Button();
 	        btn.setText("Sign in");   
-	        
-	        HBox hbBtn = new HBox(10);
-	        
 	        GridPane grid = new GridPane();
 	        grid.setAlignment(Pos.CENTER);
 	        grid.setHgap(10);
@@ -116,17 +122,23 @@ public class Snake extends Application {
 	        TextField userTextField = new TextField();
 	        grid.add(userTextField, 1, 1);
 	        
-	        hbBtn.setAlignment(Pos.BOTTOM_RIGHT);
-	        hbBtn.getChildren().add(btn);
-	        grid.add(hbBtn, 1, 4);
-	        
+	        grid.add(btn, 2, 2);
+	          
 	        btn.setOnAction((ActionEvent e) -> {
 	            String tmp = userTextField.getCharacters().toString();
 	            scoreBoard.newPlayer(tmp);
-	            
 	        });
+	        stage.setScene(new Scene(grid));
+	        stage.show();
 	}
 	
+	private void clearTheList() {
+		for(int i = scores.size() - 1; 0 <= i; i--) {
+			if(scores.get(i).getScore() == -1) {
+				scores.remove(i);
+			}
+		}
+	}
 	
 	public static void main(String[] args) {
         launch(args);
