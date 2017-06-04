@@ -21,10 +21,6 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-/**
- *
- * @author niksior
- */
 public class Snake extends Application {
     
 	private List<Player> scores = new ArrayList<Player>();
@@ -41,7 +37,13 @@ public class Snake extends Application {
 
     }
 
-	
+	public void restart(Stage s) {
+		this.stage = s;
+		scores = scoreBoard.loadFromFile();
+		stage.setTitle("Snake!");
+		switchMenu(); 
+	}
+    
 	private void switchMenu() {
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
@@ -62,7 +64,6 @@ public class Snake extends Application {
         
         btnScrBrd.setOnAction((ActionEvent e) -> {
         	stage.hide();
-        	clearTheList();
         	showScores();
         });
         
@@ -87,7 +88,6 @@ public class Snake extends Application {
 	    	 personData.add(scores.get(i).getName() + ": " + scores.get(i).getScore());
 	     }
 	     list.setItems(personData);
-	     
 	     AnchorPane.setTopAnchor(list, 10.0);
 	     AnchorPane.setLeftAnchor(list, 10.0);
 	     AnchorPane.setRightAnchor(list, 65.0);
@@ -127,17 +127,51 @@ public class Snake extends Application {
 	        btn.setOnAction((ActionEvent e) -> {
 	            String tmp = userTextField.getCharacters().toString();
 	            scoreBoard.newPlayer(tmp);
+	            stage.hide();
+	            chooseDifficulty();
 	        });
 	        stage.setScene(new Scene(grid));
 	        stage.show();
 	}
 	
-	private void clearTheList() {
-		for(int i = scores.size() - 1; 0 <= i; i--) {
-			if(scores.get(i).getScore() == -1) {
-				scores.remove(i);
-			}
-		}
+	private void chooseDifficulty() {
+		GridPane grid = new GridPane();
+        grid.setAlignment(Pos.CENTER);
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(25, 25, 25, 25));
+        
+        Text scenetitle = new Text("Welcome");
+        grid.add(scenetitle, 0, 0, 2, 1);
+        
+        Button btnEasy = new Button();
+        btnEasy.setText("Easy");
+        Button btnMedium = new Button();
+        btnMedium.setText("Medium");
+        Button btnHard = new Button();
+        btnHard.setText("Hard");
+        
+        grid.add(btnEasy, 1, 1);
+        grid.add(btnMedium, 2, 1);
+        grid.add(btnHard, 3, 1);
+        
+        btnEasy.setOnAction((ActionEvent e) -> {
+        	stage.close();
+        	Ssnake ssnake = new Ssnake(0.1, stage);
+        });
+        
+        btnMedium.setOnAction((ActionEvent e) -> {
+        	stage.close();
+        	Ssnake ssnake = new Ssnake(0.06, stage);
+        });
+        
+        btnHard.setOnAction((ActionEvent e) -> {
+        	stage.close();
+        	Ssnake ssnake = new Ssnake(0.02, stage);
+        });
+        
+        stage.setScene(new Scene(grid, 300, 200));
+        stage.show();
 	}
 	
 	public static void main(String[] args) {

@@ -8,10 +8,6 @@ import java.io.ObjectOutputStream;
 import java.util.List;
 import java.util.ArrayList;
 
-/**
- *
- * @author niksior
- */
 public final class ScoreBoard {
    
     private List<Player> scores = new ArrayList<Player>();
@@ -19,13 +15,13 @@ public final class ScoreBoard {
     
     ScoreBoard() {
         this.fileName = "scores.txt";
-        loadFromFile();
     }
     
     public void saveToFile(List<Player> scores) {
         try{
             FileOutputStream fileOut = new FileOutputStream(fileName);
             ObjectOutputStream out = new ObjectOutputStream(fileOut);
+            clearTheList();
             for(int i=0; i < scores.size(); i++) {
             	out.writeObject(scores.get(i));
             }
@@ -34,7 +30,7 @@ public final class ScoreBoard {
         }
 	catch(IOException e) {
             System.out.println("There was no file to save");
-	}
+		}
     }
     
     public List<Player> loadFromFile() {
@@ -46,11 +42,12 @@ public final class ScoreBoard {
             }
             in.close();
             fileIn.close();
+            clearTheList();
             return scores;
        }catch(IOException i) {
          System.out.println("There was no file to load");
        }catch(ClassNotFoundException c) {
-         System.out.println("Employee class not found");
+         System.out.println("Player class not found");
       }
 		return scores;
     }
@@ -61,8 +58,17 @@ public final class ScoreBoard {
     }
     
     public void setScore(int score) {
+    	loadFromFile();
         scores.get(scores.size()-1).setScore(score);
         saveToFile(scores);
     }
+    
+    private void clearTheList() {
+		for(int i = scores.size() - 1; 0 <= i; i--) {
+			if(scores.get(i).getScore() == -1) {
+				scores.remove(i);
+			}
+		}
+	}
     
 }
