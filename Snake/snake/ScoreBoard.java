@@ -14,7 +14,7 @@ import java.util.ArrayList;
  */
 public final class ScoreBoard {
    
-    private final List<Player> scores = new ArrayList<Player>();
+    private List<Player> scores = new ArrayList<Player>();
     private final String fileName;
     
     ScoreBoard() {
@@ -22,7 +22,7 @@ public final class ScoreBoard {
         loadFromFile();
     }
     
-    public void saveToFile() {
+    public void saveToFile(List<Player> scores) {
         try{
             FileOutputStream fileOut = new FileOutputStream(fileName);
             ObjectOutputStream out = new ObjectOutputStream(fileOut);
@@ -37,7 +37,7 @@ public final class ScoreBoard {
 	}
     }
     
-    public void loadFromFile() {
+    public List<Player> loadFromFile() {
         try {
             FileInputStream fileIn = new FileInputStream(fileName);
             ObjectInputStream in = new ObjectInputStream(fileIn);
@@ -46,22 +46,23 @@ public final class ScoreBoard {
             }
             in.close();
             fileIn.close();
+            return scores;
        }catch(IOException i) {
          System.out.println("There was no file to load");
-         System.out.println("Creating file");
        }catch(ClassNotFoundException c) {
          System.out.println("Employee class not found");
       }
+		return scores;
     }
     
     public void newPlayer(String name) {
         scores.add(new Player(name, 0));
-        saveToFile();
+        saveToFile(scores);
     }
     
     public void setScore(int score) {
         scores.get(scores.size()-1).setScore(score);
-        saveToFile();
+        saveToFile(scores);
     }
     
 }
