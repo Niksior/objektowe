@@ -4,6 +4,9 @@ package snake;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -11,12 +14,15 @@ import javafx.scene.Scene;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -26,9 +32,9 @@ public class Ssnake  {
 	private Stage stage;
 	public double frameRate;
 	
-	Ssnake(double d, Stage s) {
+	Ssnake(double d) {
 		this.frameRate = d;
-		this.stage = s;
+		this.stage = new Stage();
 		try {
 			runner();
 		} catch (Exception e) {
@@ -85,7 +91,7 @@ public class Ssnake  {
         return root;
     }
 
-	private void checkDirection(Node tail) {
+    private void checkDirection(Node tail) {
     	switch (direction) {
         case UP:
             tail.setTranslateX(snake.get(0).getTranslateX());
@@ -106,7 +112,7 @@ public class Ssnake  {
         default:
         	break;
     	}	
-	}
+    }
 
 	private void moveTheSnake(Node tail, Rectangle food) {
     	double tailX = tail.getTranslateX();
@@ -141,13 +147,33 @@ public class Ssnake  {
     }
 
     private void stopGame() {
-        ScoreBoard scrbrd = new ScoreBoard();
-        scrbrd.setScore((int) ((snake.size()-1)*(1/frameRate))*3);
         timeline.stop();
-        Snake newGame = new Snake();
-        stage.close();
-        newGame.restart(stage);
+        ScoreBoard scrbrd = new ScoreBoard();
+        int winner = (int) ((snake.size()-1)*(1/frameRate))*3;
+        scrbrd.setScore(winner);
+        
+        GridPane grid = new GridPane();
+        grid.setAlignment(Pos.CENTER);
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(25, 25, 25, 25));
+        Text scenetitle = new Text("Your score: " + winner);
+        grid.add(scenetitle, 0, 0, 4, 1);
+        
+        Button btnBack = new Button("Go Back");
+        
+        grid.add(btnBack, 1, 1);
+        
+        stage.setScene(new Scene(grid, 300, 200));
+        stage.show();
+        
+        btnBack.setOnAction((ActionEvent e) -> {
+            Snake newGame = new Snake();
+            stage.close();
+            newGame.restart(stage);
+        });
     }
+    
 
     private void startGame() {
     	direction = Direction.RIGHT;
@@ -160,7 +186,6 @@ public class Ssnake  {
 
     public void runner() throws Exception {
         Scene scene = new Scene(createContent());
-        scene.setFill(createGridPattern());
         scene.setOnKeyPressed(event -> {
             if (!moved)
                 return;
@@ -168,6 +193,7 @@ public class Ssnake  {
 
             moved = false;
         });
+        scene.setFill(createGridPattern());
         stage.setScene(scene);
         stage.show();
         startGame();
@@ -194,9 +220,9 @@ public class Ssnake  {
         default:
         	break;
     	}
-	}
+    }
 
-	public ImagePattern createGridPattern() {
+    public ImagePattern createGridPattern() {
 
         double w = BLOCK_SIZE;
         double h = BLOCK_SIZE;
@@ -207,11 +233,11 @@ public class Ssnake  {
         gc.setStroke(Color.DARKCYAN);
         gc.setFill(Color.BLACK);
         gc.fillRect(0, 0, w, h);
-        gc.strokeRect(1, 1, w, h);
+        gc.strokeRect(0.5, 0.5, w, h);
 
         Image image = canvas.snapshot(new SnapshotParameters(), null);
         ImagePattern pattern = new ImagePattern(image, 0, 0, w, h, false);
-
+        
         return pattern;
 
     }

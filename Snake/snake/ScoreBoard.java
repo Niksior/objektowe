@@ -18,7 +18,7 @@ public final class ScoreBoard {
     }
     
     public void saveToFile(List<Player> scores) {
-        try{
+        try {
             FileOutputStream fileOut = new FileOutputStream(fileName);
             ObjectOutputStream out = new ObjectOutputStream(fileOut);
             for(int i=0; i < scores.size(); i++) {
@@ -29,7 +29,7 @@ public final class ScoreBoard {
         }
 	catch(IOException e) {
             System.out.println("There was no file to save");
-		}
+	}
     }
     
     public List<Player> loadFromFile() {

@@ -1,7 +1,7 @@
 package snake;
 
 public class Player implements java.io.Serializable {
-	private String nick;
+    private final String nick;
     private int score;
 
     Player (String name, int scr) {

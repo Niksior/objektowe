@@ -37,56 +37,53 @@ public class Snake extends Application {
 
     }
 
-	public void restart(Stage s) {
-		this.stage = s;
-		scores = scoreBoard.loadFromFile();
-		stage.setTitle("Snake!");
-		switchMenu(); 
-	}
+    public void restart(Stage s) {
+	this.stage = s;
+	scores = scoreBoard.loadFromFile();
+	stage.setTitle("Snake!");
+	switchMenu(); 
+    }
     
-	private void switchMenu() {
+    private void switchMenu() {
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
         grid.setHgap(10);
         grid.setVgap(10);
         grid.setPadding(new Insets(25, 25, 25, 25));
         
-        Button btnScrBrd = new Button();
-        btnScrBrd.setText("Scoreboard");
-        Button btnNewGame = new Button();
-        btnNewGame.setText("New game");
-        Button btnExit = new Button();
-        btnExit.setText("Exit");
+        Button btnScrBrd = new Button("Scoreboard");
+        Button btnNewGame = new Button("New game");
+        Button btnExit = new Button("Exit");
         
         grid.add(btnScrBrd, 0, 0);
         grid.add(btnNewGame, 0, 1);
         grid.add(btnExit, 0, 2);
         
         btnScrBrd.setOnAction((ActionEvent e) -> {
-        	stage.hide();
-        	showScores();
+            stage.hide();
+            showScores();
         });
         
         btnNewGame.setOnAction((ActionEvent e) -> {
-        	stage.hide();
-        	welcomeInGame();
+            stage.hide();
+            welcomeInGame();
         });
         
         btnExit.setOnAction((ActionEvent e) -> {
-        	stage.close();
+            stage.close();
         });
         
         stage.setScene(new Scene(grid, 300, 200));
         stage.show();
-	}
+    }
 	
-	private void showScores() {
-		 AnchorPane anchorPane = new AnchorPane();
+        private void showScores() {
+             AnchorPane anchorPane = new AnchorPane();
 	     ListView<String> list = new ListView<String>();
 	     list.setItems(loadTheScoresToShow());
 	     AnchorPane.setTopAnchor(list, 10.0);
 	     AnchorPane.setLeftAnchor(list, 10.0);
-	     AnchorPane.setRightAnchor(list, 105.0);
+	     AnchorPane.setRightAnchor(list, 120.0);
 	     Button btnGoBack = new Button("Go back");
 	     AnchorPane.setTopAnchor(btnGoBack, 10.0);
 	     AnchorPane.setRightAnchor(btnGoBack, 10.0);
@@ -115,16 +112,14 @@ public class Snake extends Application {
 	}
 
 	private void clearTheScores() {
-		stage.hide();
-		scores.clear();
-    	scoreBoard.saveToFile(scores);
-    	showScores();
-		
+            stage.hide();
+            scores.clear();
+            scoreBoard.saveToFile(scores);
+            showScores();	
 	}
 
 	private void welcomeInGame() {
-		 Button btn = new Button();
-	        btn.setText("Sign in");   
+		Button btn = new Button("Sign in");  
 	        GridPane grid = new GridPane();
 	        grid.setAlignment(Pos.CENTER);
 	        grid.setHgap(10);
@@ -152,8 +147,8 @@ public class Snake extends Application {
 	        stage.show();
 	}
 	
-	private void chooseDifficulty() {
-		GridPane grid = new GridPane();
+    private void chooseDifficulty() {
+	GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
         grid.setHgap(10);
         grid.setVgap(10);
@@ -162,12 +157,9 @@ public class Snake extends Application {
         Text scenetitle = new Text("Choose difficulty and start the game");
         grid.add(scenetitle, 0, 0, 4, 1);
         
-        Button btnEasy = new Button();
-        btnEasy.setText("Easy");
-        Button btnMedium = new Button();
-        btnMedium.setText("Medium");
-        Button btnHard = new Button();
-        btnHard.setText("Hard");
+        Button btnEasy = new Button("Easy");
+        Button btnMedium = new Button("Medium");
+        Button btnHard = new Button("Hard");
         
         grid.add(btnEasy, 1, 2);
         grid.add(btnMedium, 2, 2);
@@ -175,24 +167,24 @@ public class Snake extends Application {
         
         btnEasy.setOnAction((ActionEvent e) -> {
         	stage.close();
-        	Ssnake ssnake = new Ssnake(0.1, stage);
+        	Ssnake ssnake = new Ssnake(0.1);
         });
         
         btnMedium.setOnAction((ActionEvent e) -> {
         	stage.close();
-        	Ssnake ssnake = new Ssnake(0.06, stage);
+        	Ssnake ssnake = new Ssnake(0.06);
         });
         
         btnHard.setOnAction((ActionEvent e) -> {
         	stage.close();
-        	Ssnake ssnake = new Ssnake(0.02, stage);
+        	Ssnake ssnake = new Ssnake(0.02);
         });
         
         stage.setScene(new Scene(grid, 300, 200));
         stage.show();
-	}
+    }
 	
-	public static void main(String[] args) {
+    public static void main(String[] args) {
         launch(args);
     }
 
