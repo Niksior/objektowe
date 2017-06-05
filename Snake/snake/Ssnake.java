@@ -69,6 +69,9 @@ public class Ssnake  {
         food.setFill(Color.RED);
         food.setTranslateX((int)(Math.random() * (WIDTH-BLOCK_SIZE)) / BLOCK_SIZE * BLOCK_SIZE);
         food.setTranslateY((int)(Math.random() * (HEIGHT-BLOCK_SIZE)) / BLOCK_SIZE * BLOCK_SIZE);
+		
+		Rectangle background = new Rectangle(WIDTH, HEIGHT);
+		background.setFill(createGridPattern());
         
         KeyFrame frame = new KeyFrame(Duration.seconds(frameRate), event -> {
             if (!running)
@@ -87,7 +90,7 @@ public class Ssnake  {
         timeline.getKeyFrames().add(frame);
         timeline.setCycleCount(Timeline.INDEFINITE);
 
-        root.getChildren().addAll(food, snakeBody);
+        root.getChildren().addAll(background, food, snakeBody);
         return root;
     }
 
@@ -190,10 +193,8 @@ public class Ssnake  {
             if (!moved)
                 return;
             arrowKeys(event);
-
             moved = false;
         });
-        scene.setFill(createGridPattern());
         stage.setScene(scene);
         stage.show();
         startGame();
