@@ -83,26 +83,44 @@ public class Snake extends Application {
 	private void showScores() {
 		 AnchorPane anchorPane = new AnchorPane();
 	     ListView<String> list = new ListView<String>();
-	     ObservableList<String> personData = FXCollections.observableArrayList();
-	     for(int i = 0; i < scores.size(); i++) {
-	    	 personData.add(scores.get(i).getName() + ": " + scores.get(i).getScore());
-	     }
-	     list.setItems(personData);
+	     list.setItems(loadTheScoresToShow());
 	     AnchorPane.setTopAnchor(list, 10.0);
 	     AnchorPane.setLeftAnchor(list, 10.0);
-	     AnchorPane.setRightAnchor(list, 65.0);
-	     Button btnGoBack = new Button("Back");
+	     AnchorPane.setRightAnchor(list, 105.0);
+	     Button btnGoBack = new Button("Go back");
 	     AnchorPane.setTopAnchor(btnGoBack, 10.0);
 	     AnchorPane.setRightAnchor(btnGoBack, 10.0);
-	     anchorPane.getChildren().addAll(list, btnGoBack);
+	     Button btnDel = new Button("Delete scores");
+	     AnchorPane.setBottomAnchor(btnDel, 10.0);
+	     AnchorPane.setRightAnchor(btnDel, 10.0);
+	     anchorPane.getChildren().addAll(list, btnGoBack, btnDel);
 	     stage.setScene(new Scene(anchorPane));
 	     stage.show();
 	     btnGoBack.setOnAction((ActionEvent e) -> {
 	        	stage.hide();
 	        	switchMenu();
 	        });
+	     btnDel.setOnAction((ActionEvent e) -> {
+	        	clearTheScores();
+	        });
 	}
 
+
+	private ObservableList<String> loadTheScoresToShow() {
+		ObservableList<String> personData = FXCollections.observableArrayList();
+	     for(int i = 0; i < scores.size(); i++) {
+	    	 personData.add(scores.get(i).getName() + ": " + scores.get(i).getScore());
+	     }
+		return personData;
+	}
+
+	private void clearTheScores() {
+		stage.hide();
+		scores.clear();
+    	scoreBoard.saveToFile(scores);
+    	showScores();
+		
+	}
 
 	private void welcomeInGame() {
 		 Button btn = new Button();
@@ -141,8 +159,8 @@ public class Snake extends Application {
         grid.setVgap(10);
         grid.setPadding(new Insets(25, 25, 25, 25));
         
-        Text scenetitle = new Text("Welcome");
-        grid.add(scenetitle, 0, 0, 2, 1);
+        Text scenetitle = new Text("Choose difficulty and start the game");
+        grid.add(scenetitle, 0, 0, 4, 1);
         
         Button btnEasy = new Button();
         btnEasy.setText("Easy");
@@ -151,9 +169,9 @@ public class Snake extends Application {
         Button btnHard = new Button();
         btnHard.setText("Hard");
         
-        grid.add(btnEasy, 1, 1);
-        grid.add(btnMedium, 2, 1);
-        grid.add(btnHard, 3, 1);
+        grid.add(btnEasy, 1, 2);
+        grid.add(btnMedium, 2, 2);
+        grid.add(btnHard, 3, 2);
         
         btnEasy.setOnAction((ActionEvent e) -> {
         	stage.close();

@@ -1,13 +1,6 @@
 package snake;
 
-/**
- *
- * @author niksior
- */
 public class Player implements java.io.Serializable {
-    /**
-	 * 
-	 */
 	private String nick;
     private int score;
 

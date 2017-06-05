@@ -12,6 +12,7 @@ import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
@@ -34,7 +35,6 @@ public class Ssnake  {
 			e.printStackTrace();
 		}
 	}
-	
 	
 	public enum Direction {
         UP, DOWN, LEFT, RIGHT
@@ -63,77 +63,81 @@ public class Ssnake  {
         food.setFill(Color.RED);
         food.setTranslateX((int)(Math.random() * (WIDTH-BLOCK_SIZE)) / BLOCK_SIZE * BLOCK_SIZE);
         food.setTranslateY((int)(Math.random() * (HEIGHT-BLOCK_SIZE)) / BLOCK_SIZE * BLOCK_SIZE);
-
+        
         KeyFrame frame = new KeyFrame(Duration.seconds(frameRate), event -> {
             if (!running)
                 return;
-
             boolean toRemove = snake.size() > 1;
-
             Node tail = toRemove ? snake.remove(snake.size()-1) : snake.get(0);
-            
-            double tailX = tail.getTranslateX();
-            double tailY = tail.getTranslateY();
-
-            switch (direction) {
-                case UP:
-                    tail.setTranslateX(snake.get(0).getTranslateX());
-                    tail.setTranslateY(snake.get(0).getTranslateY() - BLOCK_SIZE);
-                    break;
-                case DOWN:
-                    tail.setTranslateX(snake.get(0).getTranslateX());
-                    tail.setTranslateY(snake.get(0).getTranslateY() + BLOCK_SIZE);
-                    break;
-                case LEFT:
-                    tail.setTranslateX(snake.get(0).getTranslateX() - BLOCK_SIZE);
-                    tail.setTranslateY(snake.get(0).getTranslateY());
-                    break;
-                case RIGHT:
-                    tail.setTranslateX(snake.get(0).getTranslateX() + BLOCK_SIZE);
-                    tail.setTranslateY(snake.get(0).getTranslateY());
-                    break;
-                default:
-                	break;
-            }
-
+            checkDirection(tail);
             moved = true;
-
-            if (toRemove)
-                snake.add(0, tail);
-
-            // collision detection
-            for (Node rect : snake) {
-                if (rect != tail && tail.getTranslateX() == rect.getTranslateX()
-                        && tail.getTranslateY() == rect.getTranslateY()) {
-                	stopGame();
-                    break;
-                }
+            if (toRemove) {
+            	snake.add(0, tail);
             }
-
-            if (tail.getTranslateX() < 0 || tail.getTranslateX() >= WIDTH
-                    || tail.getTranslateY() < 0 || tail.getTranslateY() >= HEIGHT) {
-            	stopGame();
-            }
-
-            if (tail.getTranslateX() == food.getTranslateX()
-                    && tail.getTranslateY() == food.getTranslateY()) {
-                food.setTranslateX((int)(Math.random() * (WIDTH-BLOCK_SIZE)) / BLOCK_SIZE * BLOCK_SIZE);
-                food.setTranslateY((int)(Math.random() * (HEIGHT-BLOCK_SIZE)) / BLOCK_SIZE * BLOCK_SIZE);
-
-                Rectangle rect = new Rectangle(BLOCK_SIZE, BLOCK_SIZE);
-                rect.setTranslateX(tailX);
-                rect.setTranslateY(tailY);
-                rect.setFill(Color.CHARTREUSE);
-                snake.add(rect);
-            }
+            checkCollission(tail);
+            moveTheSnake(tail, food);
         });
 
         timeline.getKeyFrames().add(frame);
         timeline.setCycleCount(Timeline.INDEFINITE);
 
         root.getChildren().addAll(food, snakeBody);
-        
         return root;
+    }
+
+	private void checkDirection(Node tail) {
+    	switch (direction) {
+        case UP:
+            tail.setTranslateX(snake.get(0).getTranslateX());
+            tail.setTranslateY(snake.get(0).getTranslateY() - BLOCK_SIZE);
+            break;
+        case DOWN:
+            tail.setTranslateX(snake.get(0).getTranslateX());
+            tail.setTranslateY(snake.get(0).getTranslateY() + BLOCK_SIZE);
+            break;
+        case LEFT:
+            tail.setTranslateX(snake.get(0).getTranslateX() - BLOCK_SIZE);
+            tail.setTranslateY(snake.get(0).getTranslateY());
+            break;
+        case RIGHT:
+            tail.setTranslateX(snake.get(0).getTranslateX() + BLOCK_SIZE);
+            tail.setTranslateY(snake.get(0).getTranslateY());
+            break;
+        default:
+        	break;
+    	}	
+	}
+
+	private void moveTheSnake(Node tail, Rectangle food) {
+    	double tailX = tail.getTranslateX();
+        double tailY = tail.getTranslateY();
+    	if (tail.getTranslateX() == food.getTranslateX()
+                && tail.getTranslateY() == food.getTranslateY()) {
+            food.setTranslateX((int)(Math.random() * (WIDTH-BLOCK_SIZE)) / BLOCK_SIZE * BLOCK_SIZE);
+            food.setTranslateY((int)(Math.random() * (HEIGHT-BLOCK_SIZE)) / BLOCK_SIZE * BLOCK_SIZE);
+
+            Rectangle rect = new Rectangle(BLOCK_SIZE, BLOCK_SIZE);
+            rect.setTranslateX(tailX);
+            rect.setTranslateY(tailY);
+            rect.setFill(Color.CHARTREUSE);
+            snake.add(rect);
+        }
+    }
+    
+    private void checkCollission(Node tail) {
+    	//with snake 
+    	for (Node rect : snake) {
+             if (rect != tail && tail.getTranslateX() == rect.getTranslateX()
+                     && tail.getTranslateY() == rect.getTranslateY()) {
+             	stopGame();
+                break;
+             }
+         }
+    	 //with border
+    	 if (tail.getTranslateX() < 0 || tail.getTranslateX() >= WIDTH
+                 || tail.getTranslateY() < 0 || tail.getTranslateY() >= HEIGHT) {
+         	stopGame();
+         }
     }
 
     private void stopGame() {
@@ -160,37 +164,39 @@ public class Ssnake  {
         scene.setOnKeyPressed(event -> {
             if (!moved)
                 return;
-
-            switch (event.getCode()) {
-                case UP:
-                    if (direction != Direction.DOWN)
-                        direction = Direction.UP;
-                    break;
-                case DOWN:
-                    if (direction != Direction.UP)
-                        direction = Direction.DOWN;
-                    break;
-                case LEFT:
-                    if (direction != Direction.RIGHT)
-                        direction = Direction.LEFT;
-                    break;
-                case RIGHT:
-                    if (direction != Direction.LEFT)
-                        direction = Direction.RIGHT;
-                    break;
-                default:
-                	break;
-            }
+            arrowKeys(event);
 
             moved = false;
         });
-
         stage.setScene(scene);
         stage.show();
         startGame();
     }
     
-    public ImagePattern createGridPattern() {
+    private void arrowKeys(KeyEvent event) {
+    	switch (event.getCode()) {
+        case UP:
+            if (direction != Direction.DOWN)
+                direction = Direction.UP;
+            break;
+        case DOWN:
+            if (direction != Direction.UP)
+                direction = Direction.DOWN;
+            break;
+        case LEFT:
+            if (direction != Direction.RIGHT)
+                direction = Direction.LEFT;
+            break;
+        case RIGHT:
+            if (direction != Direction.LEFT)
+                direction = Direction.RIGHT;
+            break;
+        default:
+        	break;
+    	}
+	}
+
+	public ImagePattern createGridPattern() {
 
         double w = BLOCK_SIZE;
         double h = BLOCK_SIZE;
